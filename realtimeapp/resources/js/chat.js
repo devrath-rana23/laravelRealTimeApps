@@ -1,16 +1,21 @@
 import "./bootstrap";
+import { postData } from "./postData";
 
 const userElement = document.getElementById("users");
 const messagesElement = document.getElementById("messages");
 const messageElement = document.getElementById("message");
 const sendElement = document.getElementById("send");
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+const authenticatedUserId = document.getElementById(
+    "authenticated-user-id"
+).value;
 
 Echo.join("chat")
     .here((users) => {
         users.forEach((user, index) => {
             let element = document.createElement("li");
             element.setAttribute("id", user.id);
+            element.setAttribute("onclick", `greetUser(${user.id})`);
             element.innerText = user.name;
             userElement.appendChild(element);
         });
@@ -18,6 +23,7 @@ Echo.join("chat")
     .joining((user) => {
         let element = document.createElement("li");
         element.setAttribute("id", user.id);
+        element.setAttribute("onclick", `greetUser(${user.id})`);
         element.innerText = user.name;
         userElement.appendChild(element);
     })
@@ -33,23 +39,18 @@ Echo.join("chat")
 
 sendElement.addEventListener("click", (ev) => {
     ev.preventDefault();
-    async function postData(url = "", data = {}) {
-        const response = await fetch(url, {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": csrfToken,
-            },
-            referrerPolicy: "no-referrer",
-            body: JSON.stringify(data),
-        });
-        return response.json();
-    }
-    postData("/chat/message", {
+    postData("/chat/message", csrfToken, {
         message: messageElement.value,
     }).then((response) => {});
     messageElement.value = "";
 });
+
+Echo.private(`chat.greet.${authenticatedUserId}`).listen(
+    "GreetingSent",
+    (ev) => {
+        let element = document.createElement("li");
+        element.innerText = `${ev.message}`;
+        element.classList.add("text-success");
+        messagesElement.appendChild(element);
+    }
+);
