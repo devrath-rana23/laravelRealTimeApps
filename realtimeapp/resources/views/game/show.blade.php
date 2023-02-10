@@ -26,13 +26,13 @@
 
                     <div class="card-body">
                         <div class="text-center">
-                            <img src="{{ asset('img/circle.png') }}" height="250" width="250" alt=""
-                                class="" />
+                            <img id="circle" src="{{ asset('img/circle.png') }}" height="250" width="250"
+                                alt="" class="" />
                             <p id="winner" class="display-1 d-none text-primary"></p>
                         </div>
                         <hr />
                         <div class="text-center d-flex flex-column">
-                            <label class="font-weight-bold h5">Your Bet</label>
+                            <label id="bet" class="font-weight-bold h5">Your Bet</label>
                             <select class="custom-select col-auto">
                                 <option selected>Not in</option>
                                 @foreach (range(1, 12) as $number)
@@ -52,4 +52,5 @@
         </div>
     </div>
     </div>
+    @vite(['resources/js/gameShow.js'])
 @endsection

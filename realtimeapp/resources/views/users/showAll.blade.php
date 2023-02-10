@@ -41,7 +41,6 @@
                 usersElement.appendChild(element);
             });
         })
-
-       
     </script>
+    @vite(['resources/js/usersList.js'])
 @endsection
