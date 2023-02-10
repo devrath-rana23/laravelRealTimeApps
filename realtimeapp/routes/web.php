@@ -25,3 +25,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/users', function () {
     return view("users.showAll");
 });
+
+Route::get('/game', function () {
+    return view("game.show");
+});
